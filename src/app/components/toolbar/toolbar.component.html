@@ -1,0 +1,13 @@
+<nav class="toolbar">
+  <div class="toolbar-content">
+    <div class="tool-group" *ngFor="let tool of tools">
+      <button 
+        class="tool-button"
+        (click)="selectTool(tool.name)"
+        [attr.aria-label]="tool.label">
+  <mat-icon class="tool-icon">{{ tool.icon }}</mat-icon>
+        <span class="tool-label">{{ tool.label }}</span>
+      </button>
+    </div>
+  </div>
+</nav>

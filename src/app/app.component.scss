@@ -1,0 +1,41 @@
+@use '../styles/_variables' as *;
+@use '../styles/mixin' as *;
+
+.app-container {
+  min-height: 100vh;
+  background: $background;
+}
+
+.app-header {
+  background: $white;
+  border-bottom: 1px solid $secondary-grey;
+  padding: 20px;
+  
+  .app-title {
+    @include font-variation($font-weight-semibold);
+    margin: 0;
+    color: $text-color;
+    text-align: center;
+  }
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 80px);
+}
+
+// mobile responsiveness
+@media (max-width: $breakpoint-md) {
+  .app-header {
+    padding: 15px;
+    
+    .app-title {
+      font-size: 1.2rem;
+    }
+  }
+  
+  .app-main {
+    height: calc(100vh - 60px);
+  }
+}

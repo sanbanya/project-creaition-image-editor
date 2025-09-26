@@ -1,0 +1,326 @@
+<div class="ai-generation-panel">
+  <mat-card class="panel-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon class="title-icon">auto_awesome</mat-icon>
+        AI Image Generation
+      </mat-card-title>
+      <mat-card-subtitle>Base Stable Diffusion smart image generation</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- API status indicator -->
+      <div class="api-status" [class.available]="(canGenerate$ | async)" 
+           [class.unavailable]="!(canGenerate$ | async)">
+        <mat-icon>{{ (canGenerate$ | async) ? 'check_circle' : 'error' }}</mat-icon>
+        <span>{{ (canGenerate$ | async) ? 'API Available' : 'API Unavailable' }}</span>
+        <span class="rate-limit">(Remaining: {{ (rateLimit$ | async)?.remaining }}/{{ (rateLimit$ | async)?.limit }})</span>
+      </div>
+
+      <form [formGroup]="generationForm" class="generation-form">
+        <!-- Generation Mode Selection -->
+        <div class="form-section">
+          <label class="section-label">Generation Mode</label>
+          <div class="mode-selector">
+            <button 
+              *ngFor="let mode of generationModes"
+              type="button"
+              class="mode-button"
+              [class.active]="generationForm.get('mode')?.value === mode.value"
+              (click)="generationForm.patchValue({ mode: mode.value })"
+              matTooltip="{{ mode.label }}">
+              <mat-icon>{{ mode.icon }}</mat-icon>
+              <span>{{ mode.label }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Prompt Input -->
+        <div class="form-section">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Prompt *</mat-label>
+            <textarea 
+              matInput
+              formControlName="prompt"
+              placeholder=" a detailed description of the image you want to generate..."
+              rows="3"
+              maxlength="500">
+            </textarea>
+            <mat-hint> inputed {{ generationForm.get('prompt')?.value?.length || 0 }}/500 characters</mat-hint>
+            <mat-error *ngIf="generationForm.get('prompt')?.hasError('required')">
+              Prompt is required
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Prompt Suggestions -->
+          <div class="prompt-suggestions" *ngIf="!generationForm.get('prompt')?.value">
+            <label class="suggestion-label">Quick Suggestions:</label>
+            <mat-chip-listbox>
+              <mat-chip 
+                *ngFor="let suggestion of promptSuggestions" 
+                (click)="usePromptSuggestion(suggestion)"
+                matTooltip="Click to use this suggestion">
+                {{ suggestion }}
+              </mat-chip>
+            </mat-chip-listbox>
+          </div>
+        </div>
+
+        <!-- Negative Prompt -->
+        <div class="form-section">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Negative Prompt (Optional)</mat-label>
+            <input 
+              matInput
+              formControlName="negativePrompt"
+              placeholder="Content you don't want to appear in the image..."
+              maxlength="500">
+            <mat-hint> inputed {{ generationForm.get('negativePrompt')?.value?.length || 0 }}/500 characters</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <!-- Image Upload Area -->
+        <div class="form-section" *ngIf="generationForm.get('mode')?.value !== 'text-to-image'">
+          <label class="section-label">Reference Image</label>
+          <div class="image-upload-area" 
+               [class.has-image]="previewImage"
+               (click)="fileInput.click()">
+            <input #fileInput type="file" (change)="onImageUpload($event, 'input')" accept="image/*" hidden>
+            
+            <div class="upload-placeholder" *ngIf="!previewImage">
+              <mat-icon>cloud_upload</mat-icon>
+              <span>Click to upload reference image</span>
+              <small>Supports JPEG, PNG, WebP (max 10MB)</small>
+            </div>
+            
+            <div class="image-preview" *ngIf="previewImage">
+              <img [src]="previewImage" alt="Reference Image">
+              <button type="button" class="remove-image" (click)="removeImage('input'); $event.stopPropagation()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mask Upload (Inpainting Mode Only) -->
+        <div class="form-section" *ngIf="generationForm.get('mode')?.value === 'inpainting'">
+          <label class="section-label">Mask Image</label>
+          <div class="image-upload-area" 
+               [class.has-image]="maskImage"
+               (click)="maskInput.click()">
+            <input #maskInput type="file" (change)="onImageUpload($event, 'mask')" accept="image/*" hidden>
+            
+            <div class="upload-placeholder" *ngIf="!maskImage">
+              <mat-icon>edit</mat-icon>
+              <span>Click to upload mask image</span>
+              <small>Black areas will be regenerated</small>
+            </div>
+            
+            <div class="image-preview" *ngIf="maskImage">
+              <img [src]="maskImage" alt="Mask Image">
+              <button type="button" class="remove-image" (click)="removeImage('mask'); $event.stopPropagation()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Model Selection -->
+        <div class="form-section">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>AI Model</mat-label>
+            <mat-select formControlName="model" (selectionChange)="onModelChange($event.value)">
+              <mat-option *ngFor="let model of aiModels" [value]="model.value">
+                {{ model.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Advanced Settings -->
+        <mat-expansion-panel class="advanced-settings">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon>tune</mat-icon>
+              Advanced Settings
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="parameters-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Width</mat-label>
+              <input matInput type="number" formControlName="width" min="64" max="1024">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Height</mat-label>
+              <input matInput type="number" formControlName="height" min="64" max="1024">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Steps</mat-label>
+              <input matInput type="number" formControlName="steps" min="1" max="50">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Guidance Scale</mat-label>
+              <input matInput type="number" step="0.1" formControlName="guidanceScale" min="1" max="20">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" *ngIf="generationForm.get('mode')?.value !== 'text-to-image'">
+              <mat-label>Strength</mat-label>
+              <input matInput type="number" step="0.1" formControlName="strength" min="0.1" max="1">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Random Seed</mat-label>
+              <input matInput type="number" formControlName="seed" placeholder="Randomly generated">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Number of Outputs</mat-label>
+              <input matInput type="number" formControlName="numOutputs" min="1" max="4">
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button 
+            type="button"
+            class="generate-button"
+            mat-raised-button
+            color="primary"
+            [disabled]="!generationForm.valid || !(canGenerate$ | async) || (isGenerating$ | async)"
+            (click)="onGenerate()">
+            <mat-icon *ngIf="!(isGenerating$ | async)">auto_awesome</mat-icon>
+            <mat-spinner diameter="20" *ngIf="isGenerating$ | async"></mat-spinner>
+            {{ (isGenerating$ | async) ? 'Generating...' : 'Generate Image' }}
+          </button>
+          
+          <button 
+            *ngIf="isGenerating$ | async"
+            type="button"
+            class="cancel-button"
+            mat-button
+            (click)="onCancel()">
+            <mat-icon>cancel</mat-icon>
+            Cancel
+          </button>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div *ngIf="isGenerating$ | async" class="progress-section">
+          <mat-progress-bar 
+            mode="determinate" 
+            [value]="(progress$ | async)?.progress || 0">
+          </mat-progress-bar>
+          <div class="progress-info">
+            <span>Progress: {{ (progress$ | async)?.progress || 0 }}%</span>
+            <span *ngIf="(progress$ | async)?.estimatedTimeRemaining">
+              (Estimated Time Remaining: {{ (progress$ | async)?.estimatedTimeRemaining }} seconds)
+            </span>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="error$ | async as error" class="error-message">
+          <mat-icon color="warn">error</mat-icon>
+          <div class="error-content">
+            <strong>Generation Failed:</strong> {{ error.message }}
+          </div>
+          <button 
+            type="button"
+            mat-icon-button
+            (click)="onRetry()"
+            matTooltip="Retry">
+            <mat-icon>refresh</mat-icon>
+          </button>
+          <button 
+            type="button"
+            mat-icon-button
+            (click)="onClearError()"
+            matTooltip="Clear Error">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </form>
+
+      <!-- Generated Image Preview -->
+      <div *ngIf="generatedImages.length > 0" class="generated-images">
+        <label class="section-label">Generation Results</label>
+        <div class="image-grid">
+          <div *ngFor="let image of generatedImages; let i = index" class="generated-image-item">
+            <img [src]="image" [alt]="'Generated Image ' + (i + 1)">
+            <div class="image-actions">
+              <button 
+                mat-icon-button
+                color="primary"
+                (click)="useGeneratedImage(image)"
+                matTooltip="Use this image">
+                <mat-icon>add_photo_alternate</mat-icon>
+              </button>
+              <button 
+                mat-icon-button
+                (click)="downloadImage(image, i)"
+                matTooltip="Download Image">
+                <mat-icon>download</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Records -->
+      <mat-expansion-panel class="history-section">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>history</mat-icon>
+            Generation History ({{ (generationHistory$ | async)?.length || 0 }})
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="history-actions">
+          <button mat-button (click)="clearHistory()" color="warn">
+            <mat-icon>delete_sweep</mat-icon>
+            Clear History
+          </button>
+        </div>
+
+        <div class="history-list">
+          <div *ngFor="let item of generationHistory$ | async; trackBy: trackByFn" 
+               class="history-item"
+               [class.selected]="selectedHistoryItem?.id === item.id">
+            <div class="history-content">
+              <div class="history-prompt">{{ item.request.prompt }}</div>
+              <div class="history-meta">
+                <span>{{ item.request.model }} • {{ item.request.mode }}</span>
+                <span>{{ item.timestamp | date:'short' }}</span>
+              </div>
+            </div>
+            <div class="history-actions">
+              <button 
+                mat-icon-button
+                (click)="regenerateFromHistory(item)"
+                matTooltip="Regenerate">
+                <mat-icon>refresh</mat-icon>
+              </button>
+              <button 
+                mat-icon-button
+                [color]="item.favorite ? 'warn' : 'default'"
+                (click)="toggleFavorite(item)"
+                matTooltip="{{ item.favorite ? 'Unfavorite' : 'Favorite' }}">
+                <mat-icon>{{ item.favorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="!(generationHistory$ | async)?.length" class="empty-history">
+            <mat-icon>inbox</mat-icon>
+            <p>No Generation History</p>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-card-content>
+  </mat-card>
+</div>

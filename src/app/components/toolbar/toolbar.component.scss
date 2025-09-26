@@ -1,0 +1,62 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixin' as *;
+
+.toolbar {
+  background: $white;
+  border-bottom: 1px solid $secondary-grey;
+  padding: 10px 0;
+  
+  .toolbar-content {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+.tool-button {
+  @include button-base;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 15px;
+  background: $white;
+  border: 1px solid $secondary-grey !important;
+  min-width: 80px;
+  
+  .tool-icon {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+  
+  .tool-label {
+    @include font-variation($font-weight-normal);
+    font-size: 12px;
+  }
+  
+  &:hover {
+    background: $primary-grey !important;
+    
+    .tool-label {
+      @include font-variation($font-weight-medium, $font-slant-italic);
+    }
+  }
+}
+
+// mobile responsiveness
+@media (max-width: $breakpoint-md) {
+  .toolbar-content {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 0 10px;
+  }
+  
+  .tool-button {
+    min-width: 60px;
+    padding: 8px 10px;
+    
+    .tool-label {
+      font-size: 10px;
+    }
+  }
+}

@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'strokeWeight';
+  src: local('Arial');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Eina03';
+  src: local('Helvetica');
+  font-display: swap;
+}
