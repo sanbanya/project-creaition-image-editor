@@ -1,0 +1,93 @@
+@use './variables' as *;
+@use './mixin' as *;
+
+// overwrite Tui.ImageEditor styles
+.tui-image-editor-container {
+  // crop menu and submenu styles
+  .tui-image-editor-menu-crop,
+  .tui-image-editor-submenu-crop {
+    background: $primary-grey !important;
+    color: $text-color !important;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-weight: bold;
+  }
+  background-color: $background !important;
+  font-family: $font-family-primary !important;
+
+  // top toolbar
+  .tui-image-editor-header {
+    background: $white !important;
+    border-bottom: 1px solid $secondary-grey !important;
+    
+    .tui-image-editor-header-buttons {
+      button {
+        @include button-base;
+        background: $white !important;
+        color: $text-color !important;
+        border: 1px solid $secondary-grey !important;
+        margin: 0 5px;
+        padding: 0 20px;
+        
+        &:hover {
+          background: $primary-grey !important;
+        }
+      }
+    }
+  }
+  
+  // main content area
+  .tui-image-editor-main {
+    background: $background !important;
+
+    // left menu
+    .tui-image-editor-menu {
+      background: $white !important;
+      border-right: 1px solid $secondary-grey !important;
+      
+      .tui-image-editor-menu-item {
+        @include button-base;
+        background: transparent !important;
+        color: $text-color !important;
+        border: none !important;
+        margin: 5px 0;
+        
+        &.active {
+          background: $primary-grey !important;
+        }
+      }
+    }
+
+    // canvas area
+    .tui-image-editor-wrap {
+      background: $white !important;
+      border: 1px solid $secondary-grey !important;
+    }
+
+    // right properties panel
+    .tui-image-editor-controls {
+      background: $white !important;
+      border-left: 1px solid $secondary-grey !important;
+      
+      input, select {
+        @include input-base;
+        background: $white !important;
+        color: $text-color !important;
+        padding: 0 10px;
+      }
+      
+      .tui-image-editor-button {
+        @include button-base;
+        background: $white !important;
+        color: $text-color !important;
+        border: 1px solid $secondary-grey !important;
+      }
+    }
+  }
+  
+  // submenu bar
+  .tui-image-editor-submenu {
+    background: $white !important;
+    border-top: 1px solid $secondary-grey !important;
+  }
+}

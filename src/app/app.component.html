@@ -1,0 +1,18 @@
+<div class="app-container">
+  <header class="app-header">
+    <h1 class="app-title">{{ title }}</h1>
+  </header>
+  
+  <main class="app-main">
+    <app-toolbar (toolSelected)="onToolSelected($event)"></app-toolbar>
+    <div class="editor-container">
+      <app-image-editor #imageEditor></app-image-editor>
+      <div class="ai-drawer" [class.open]="aiPanelOpen">
+        <app-ai-generation-panel 
+          *ngIf="aiPanelOpen"
+          (imageGenerated)="onImageGenerated($event)"
+        ></app-ai-generation-panel>
+      </div>
+    </div>
+  </main>
+</div>

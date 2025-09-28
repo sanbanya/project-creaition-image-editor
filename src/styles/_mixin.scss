@@ -1,0 +1,26 @@
+@use './_variables' as *;
+
+@mixin font-variation($weight: $font-weight-normal, $slant: $font-slant-normal) {
+  font-family: $font-family-primary;
+  font-variation-settings: 'wght' $weight, 'slnt' $slant;
+}
+
+@mixin button-base {
+  min-height: $button-height;
+  border-radius: $border-radius-btn;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  @include font-variation($font-weight-normal, $font-slant-normal);
+  
+  &:hover {
+    @include font-variation($font-weight-medium, $font-slant-italic);
+  }
+}
+
+@mixin input-base {
+  height: $input-height;
+  border-radius: $border-radius-input;
+  border: 1px solid $secondary-grey;
+  @include font-variation();
+}

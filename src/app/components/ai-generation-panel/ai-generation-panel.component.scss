@@ -1,0 +1,263 @@
+.generate-button {
+	border-radius: 14px !important;
+	background: linear-gradient(90deg, #6c63ff 0%, #7b809a 100%) !important;
+	color: #fff !important;
+	font-weight: 600;
+	font-size: 1.08rem;
+	box-shadow: 0 2px 12px rgba(108,99,255,0.10);
+	padding: 12px 28px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	transition: box-shadow 0.2s, background 0.2s;
+}
+.generate-button:hover:not(:disabled) {
+	background: linear-gradient(90deg, #7b809a 0%, #6c63ff 100%) !important;
+	box-shadow: 0 4px 16px rgba(108,99,255,0.16);
+}
+.generate-button:disabled {
+	background: #e0e7ef !important;
+	color: #b0b6c3 !important;
+	box-shadow: none;
+}
+.generate-button mat-icon {
+	font-size: 1.4rem;
+	margin-right: 4px;
+}
+.generate-button mat-spinner {
+	margin-right: 6px;
+}
+.mat-option {
+	background: #f3f6fa !important;
+	color: #333 !important;
+}
+// AI Model下拉选项美化
+.mat-select-panel {
+	z-index: 2000 !important;
+	background: #f8fafc !important;
+	box-shadow: 0 4px 24px rgba(108,99,255,0.08);
+}
+.ai-generation-panel {
+	padding: 0;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.panel-card {
+	box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+	border-radius: 18px;
+	background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+	padding: 24px 18px 18px 18px;
+	margin: 16px;
+}
+
+.mat-card-title {
+	font-size: 1.35rem;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.title-icon {
+	color: #6c63ff;
+	font-size: 2rem;
+}
+.mat-card-subtitle {
+	color: #7b809a;
+	font-size: 0.95rem;
+}
+
+.api-status {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 12px;
+	font-size: 1rem;
+	font-weight: 500;
+}
+.api-status.available mat-icon {
+	color: #4caf50;
+}
+.api-status.unavailable mat-icon {
+	color: #f44336;
+}
+.rate-limit {
+	margin-left: auto;
+	font-size: 0.9rem;
+	color: #7b809a;
+}
+
+.generation-form {
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+}
+.form-section {
+	margin-bottom: 0;
+}
+.section-label {
+	font-weight: 500;
+	color: #6c63ff;
+	margin-bottom: 6px;
+	display: block;
+}
+.mode-selector {
+	display: flex;
+	gap: 18px;
+	justify-content: space-between;
+}
+.mode-button {
+	flex: 1 1 0;
+	min-width: 0;
+	max-width: 140px;
+	border-radius: 12px;
+	border: 1.5px solid #e0e7ef;
+	background: #fff;
+	color: #6c63ff;
+	font-weight: 500;
+	padding: 12px 0 10px 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	font-size: 1.08rem;
+	transition: box-shadow 0.2s, background 0.2s, border-color 0.2s;
+	box-shadow: 0 2px 8px rgba(108,99,255,0.04);
+	cursor: pointer;
+	outline: none;
+}
+.mode-button:hover {
+	cursor: pointer;
+}
+.mat-chip {
+	cursor: pointer !important;
+}
+.mode-button mat-icon {
+	font-size: 2.1rem;
+	margin-bottom: 2px;
+	color: #6c63ff;
+	transition: color 0.2s;
+}
+.mode-button.active {
+	background: linear-gradient(90deg, #6c63ff 0%, #7b809a 100%);
+	color: #fff;
+	border-color: #6c63ff;
+	box-shadow: 0 4px 16px rgba(108,99,255,0.10);
+}
+.mode-button.active mat-icon {
+	color: #fff;
+}
+.mode-button.active {
+	background: linear-gradient(90deg, #6c63ff 0%, #7b809a 100%);
+	color: #fff;
+	box-shadow: 0 4px 16px rgba(108,99,255,0.10);
+}
+.full-width {
+	width: 100%;
+}
+.mat-form-field {
+	margin-bottom: 0;
+}
+.mat-hint {
+	color: #7b809a !important;
+}
+.mat-error {
+	color: #f44336 !important;
+}
+.prompt-suggestions {
+	margin-top: 6px;
+	margin-bottom: 0;
+}
+.suggestion-label {
+	font-size: 0.95rem;
+	color: #7b809a;
+	margin-right: 8px;
+}
+.mat-chip {
+	background: #e0e7ef !important;
+	color: #6c63ff !important;
+	font-weight: 500;
+	cursor: pointer;
+	margin-right: 4px;
+}
+.mat-chip:hover {
+	background: #6c63ff !important;
+	color: #fff !important;
+}
+.image-upload-area {
+	border: 2px dashed #e0e7ef;
+	border-radius: 12px;
+	background: #f8fafc;
+	padding: 18px;
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+	transition: border-color 0.2s;
+}
+.image-upload-area.has-image {
+	border-color: #6c63ff;
+	background: #eef2f7;
+}
+.upload-placeholder mat-icon {
+	font-size: 2.2rem;
+	color: #7b809a;
+}
+.upload-placeholder span {
+	display: block;
+	font-size: 1.05rem;
+	color: #7b809a;
+	margin-top: 4px;
+}
+.upload-placeholder small {
+	color: #b0b6c3;
+	font-size: 0.9rem;
+}
+.image-preview {
+	position: relative;
+	display: inline-block;
+}
+.image-preview img {
+	max-width: 180px;
+	max-height: 120px;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(108,99,255,0.10);
+}
+.remove-image {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	background: rgba(255,255,255,0.85);
+	border-radius: 50%;
+	border: none;
+	box-shadow: 0 2px 8px rgba(108,99,255,0.10);
+	cursor: pointer;
+	padding: 2px;
+}
+.remove-image mat-icon {
+	font-size: 1.1rem;
+	color: #f44336;
+}
+// AI属性面板侧滑动画
+.ai-drawer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 400px;
+	max-width: 90vw;
+	z-index: 100;
+	transform: translateX(-100%);
+	transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+	box-shadow: 2px 0 16px rgba(0,0,0,0.08);
+	background: #fff;
+	overflow-y: auto;
+}
+.ai-drawer.open {
+	transform: translateX(0);
+}
+.properties-panel-desktop {
+	height: 100%;
+	padding: 0;
+	background: transparent;
+}

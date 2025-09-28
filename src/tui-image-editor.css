@@ -1,0 +1,2 @@
+/* Import official TUI Image Editor CSS for global styles */
+@import '../node_modules/tui-image-editor/dist/tui-image-editor.css';
