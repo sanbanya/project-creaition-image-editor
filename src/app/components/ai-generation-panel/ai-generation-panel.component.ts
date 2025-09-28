@@ -72,9 +72,9 @@ export class AIGenerationPanelComponent implements OnInit, OnDestroy {
 
   // local state
   generationModes = [
-    { value: 'text-to-image', label: '文生图', icon: 'text_fields' },
-    { value: 'image-to-image', label: '图生图', icon: 'photo' },
-    { value: 'inpainting', label: '智能修图', icon: 'healing' }
+    { value: 'text-to-image', label: 'Text to Image', icon: 'text_fields' },
+    { value: 'image-to-image', label: 'Image to Image', icon: 'photo' },
+    { value: 'inpainting', label: 'Inpainting', icon: 'healing' }
   ];
 
   aiModels = [
@@ -117,10 +117,13 @@ export class AIGenerationPanelComponent implements OnInit, OnDestroy {
     this.generationHistory$ = this.store.select(fromAI.selectGenerationHistory);
 
     // initialize form
-    this.generationForm = this.createForm();
+  this.generationForm = this.createForm();
+  // 强制设置默认模型，防止 model 字段为 undefined
+  this.generationForm.patchValue({ model: 'stable-diffusion' });
   }
 
   ngOnInit() {
+    console.log('[ai-generation-panel] ngOnInit');
     // check API status on init
     this.store.dispatch(AIActions.checkAPIStatus());
 
@@ -160,8 +163,8 @@ export class AIGenerationPanelComponent implements OnInit, OnDestroy {
   private createForm(): FormGroup {
     return this.fb.group({
       mode: ['text-to-image', Validators.required],
-      prompt: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
-      negativePrompt: ['', Validators.maxLength(500)],
+      prompt: ['A beautiful sunset over mountains, digital art', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
+      negativePrompt: ['low quality, blurry', Validators.maxLength(500)],
       model: ['stable-diffusion', Validators.required],
       width: [512, [Validators.required, Validators.min(64), Validators.max(1024)]],
       height: [512, [Validators.required, Validators.min(64), Validators.max(1024)]],
@@ -299,9 +302,18 @@ export class AIGenerationPanelComponent implements OnInit, OnDestroy {
   }
 
 
+
+  // base64图片转为data url用于img src
+  getImageSrc(image: string): string {
+    if (!image) return '';
+    // 如果已经是data url则直接返回，否则加上前缀
+    return image.startsWith('data:image') ? image : 'data:image/png;base64,' + image;
+  }
+
   // use generated image
   useGeneratedImage(imageData: string) {
-    this.imageGenerated.emit(imageData);
+  console.log('[ai-generation-panel] useGeneratedImage triggered', imageData);
+  this.imageGenerated.emit(imageData);
   }
 
   // download generated image

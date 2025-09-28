@@ -10,6 +10,12 @@ export class ImageEditorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef;
   private imageEditor: any;
 
+  // 监听AI生成图片事件
+  public onImageGenerated(base64Data: string) {
+    // console.log('[image-editor] loadBase64ImageToCanvas', 'base64Data');
+    this.loadBase64ImageToCanvas(base64Data);
+  }
+
   ngAfterViewInit() {
     this.initializeImageEditor();
   }
@@ -24,8 +30,8 @@ export class ImageEditorComponent implements AfterViewInit, OnDestroy {
     this.imageEditor = new ImageEditor(this.editorContainer.nativeElement, {
       includeUI: {
         loadImage: {
-          path: 'assets/sample-image.jpg', // 准备一个示例图片
-          name: 'SampleImage'
+          path: 'assets/placeholder.png', // 默认占位图
+          name: 'PlaceholderImage'
         },
         theme: this.getCustomTheme(),
         menu: ['crop', 'flip', 'rotate', 'draw', 'shape', 'icon', 'text', 'mask', 'filter'],
@@ -66,4 +72,22 @@ export class ImageEditorComponent implements AfterViewInit, OnDestroy {
   public getEditorInstance(): any {
     return this.imageEditor;
   }
+
+  /**
+   * Load base64 image data onto the TUI Image Editor canvas (AI preview)
+   * Only call this after receiving AI image data
+   */
+  public loadBase64ImageToCanvas(base64Data: string) {
+    console.log('[image-editor] loadBase64ImageToCanvas', base64Data);
+    const img = new Image();
+    img.src = base64Data.startsWith('data:image') ? base64Data : 'data:image/png;base64,' + base64Data;
+    img.onload = () => {
+      if (this.imageEditor) {
+        this.imageEditor.loadImageFromURL(img.src, 'AI Generated Image').then(() => {
+          // Optionally fit image to canvas or do further actions
+        });
+      }
+    };
+  }
+// ...existing code ends here
 }

@@ -4,7 +4,7 @@ import { initialAIState } from '../../core/models/ai-generation.models';
 import { AIGenerationRequest, AIGenerationResponse, GenerationHistoryItem, AIError, GenerationProgress, AI_MODEL } from '../../core/models/ai-generation.models';
 
 // main feature selector
-export const selectAIState = createFeatureSelector<AIState>('aiGeneration');
+export const selectAIState = createFeatureSelector<AIState>('ai');
 
 // ============================================================================
 // basic state selectors

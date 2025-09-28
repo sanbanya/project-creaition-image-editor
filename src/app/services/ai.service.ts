@@ -20,7 +20,7 @@ export class AIService {
    * call Google Imagen API (stub implementation)
    */
   private callGoogleAIAPI(request: AIGenerationRequest, modelConfig: AI_MODEL_CONFIG): Observable<AIGenerationResponse> {
-    // TODO: 实现 Google Imagen API 调用逻辑
+    // TODO: implement Google Imagen API call logic
     return throwError(() => this.createError('NOT_IMPLEMENTED', 'Google Imagen API not implemented'));
   }
   private apiConfig = {
@@ -154,7 +154,8 @@ export class AIService {
     
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.apiConfig.huggingFace.apiKey}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
     });
 
     const payload = this.buildHuggingFacePayload(request);
@@ -211,8 +212,13 @@ export class AIService {
    */
   private mapHuggingFaceResponse(response: any, request: AIGenerationRequest): AIGenerationResponse {
     // Hugging Face API may return different structures based on model
-    const imageData = response.generated_image || response.image;
-    
+    let imageData = response.generated_image || response.image;
+
+    // 如果 response 是 base64 字符串，直接用它
+    if (typeof response === 'string' && /^[A-Za-z0-9+/=]+$/.test(response.substring(0, 40))) {
+      imageData = response;
+    }
+
     if (!imageData) {
       throw this.createError('INVALID_RESPONSE', 'No image data received from API');
     }

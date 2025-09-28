@@ -3,11 +3,12 @@ export const environment = {
   
   // Hugging Face API configuration
   huggingFace: {
-    apiKey: 'hf_your_api_key_here', // get from environment variables
+    // apiKey: 'your api key', // get from environment variables
+    apiKey:'',
     baseUrl: 'https://api-inference.huggingface.co/models',
     models: {
-      stableDiffusion: 'stabilityai/stable-diffusion-xl-base-1.0',
-      qwenImageEdit: 'Qwen/Qwen2.5-VL-7B-Instruct'  // update with actual model name
+      'stable-diffusion': 'stabilityai/stable-diffusion-xl-base-1.0',
+      'qwen-image-edit': 'Qwen/Qwen2.5-VL-7B-Instruct'  // update with actual model name
     },
     rateLimit: 1000
   },

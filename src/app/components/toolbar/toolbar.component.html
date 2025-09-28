@@ -1,11 +1,11 @@
 <nav class="toolbar">
-  <div class="toolbar-content">
+  <div class="toolbar-content left-align">
     <div class="tool-group" *ngFor="let tool of tools">
       <button 
-        class="tool-button"
+        class="tool-button ai-api-btn"
         (click)="selectTool(tool.name)"
         [attr.aria-label]="tool.label">
-  <mat-icon class="tool-icon">{{ tool.icon }}</mat-icon>
+        <mat-icon class="tool-icon" [ngClass]="{'ai-icon': tool.name === 'ai'}">{{ tool.icon }}</mat-icon>
         <span class="tool-label">{{ tool.label }}</span>
       </button>
     </div>

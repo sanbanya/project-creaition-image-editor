@@ -5,6 +5,14 @@
   
   <main class="app-main">
     <app-toolbar (toolSelected)="onToolSelected($event)"></app-toolbar>
-    <app-image-editor></app-image-editor>
+    <div class="editor-container">
+      <app-image-editor #imageEditor></app-image-editor>
+      <div class="ai-drawer" [class.open]="aiPanelOpen">
+        <app-ai-generation-panel 
+          *ngIf="aiPanelOpen"
+          (imageGenerated)="onImageGenerated($event)"
+        ></app-ai-generation-panel>
+      </div>
+    </div>
   </main>
 </div>

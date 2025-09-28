@@ -27,8 +27,7 @@
               type="button"
               class="mode-button"
               [class.active]="generationForm.get('mode')?.value === mode.value"
-              (click)="generationForm.patchValue({ mode: mode.value })"
-              matTooltip="{{ mode.label }}">
+              (click)="generationForm.patchValue({ mode: mode.value })">
               <mat-icon>{{ mode.icon }}</mat-icon>
               <span>{{ mode.label }}</span>
             </button>
@@ -58,8 +57,7 @@
             <mat-chip-listbox>
               <mat-chip 
                 *ngFor="let suggestion of promptSuggestions" 
-                (click)="usePromptSuggestion(suggestion)"
-                matTooltip="Click to use this suggestion">
+                (click)="usePromptSuggestion(suggestion)">
                 {{ suggestion }}
               </mat-chip>
             </mat-chip-listbox>
@@ -191,7 +189,7 @@
             class="generate-button"
             mat-raised-button
             color="primary"
-            [disabled]="!generationForm.valid || !(canGenerate$ | async) || (isGenerating$ | async)"
+              [disabled]="!generationForm.valid || (isGenerating$ | async)"
             (click)="onGenerate()">
             <mat-icon *ngIf="!(isGenerating$ | async)">auto_awesome</mat-icon>
             <mat-spinner diameter="20" *ngIf="isGenerating$ | async"></mat-spinner>
@@ -251,19 +249,22 @@
         <label class="section-label">Generation Results</label>
         <div class="image-grid">
           <div *ngFor="let image of generatedImages; let i = index" class="generated-image-item">
-            <img [src]="image" [alt]="'Generated Image ' + (i + 1)">
+            <img [src]="getImageSrc(image)" [alt]="'Generated Image ' + (i + 1)" style="max-width: 220px; max-height: 220px; border-radius: 8px; box-shadow: 0 2px 8px rgba(108,99,255,0.10);">
             <div class="image-actions">
               <button 
-                mat-icon-button
+                mat-raised-button
                 color="primary"
+                style="margin-right: 8px;"
                 (click)="useGeneratedImage(image)"
-                matTooltip="Use this image">
+                aria-label="Use this image">
                 <mat-icon>add_photo_alternate</mat-icon>
+                Use this image
               </button>
               <button 
                 mat-icon-button
                 (click)="downloadImage(image, i)"
-                matTooltip="Download Image">
+                matTooltip="Download Image"
+                aria-label="Download image">
                 <mat-icon>download</mat-icon>
               </button>
             </div>

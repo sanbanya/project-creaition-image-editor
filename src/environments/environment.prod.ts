@@ -6,8 +6,8 @@ export const environment = {
   apiKey: '', // need to fill in with your own key
     baseUrl: 'https://api-inference.huggingface.co/models',
     models: {
-      stableDiffusion: 'stabilityai/stable-diffusion-xl-base-1.0',
-      qwenImageEdit: 'Qwen/Qwen2.5-VL-7B-Instruct'
+      'stable-diffusion': 'stabilityai/stable-diffusion-xl-base-1.0',
+      'qwen-image-edit': 'Qwen/Qwen2.5-VL-7B-Instruct'  // update with actual model name
     },
     rateLimit: 1000,
     timeout: 300000

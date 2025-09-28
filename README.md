@@ -43,6 +43,14 @@ An online image editor built with Angular and TUI Image Editor. Features croppin
 - Error handling & status indicators
 
 
+## How to Use the AI Panel
+
+1. Click the **AI API** button in the toolbar to slide out the AI properties panel from the side.
+2. Enter your prompt in the input box and generate AI images.
+3. After generation, click **Use this image** to preview and edit the generated image directly in the image editor canvas.
+4. You can continue editing the image with all available editor tools.
+
+
 ## Design Decisions
 
 - Angular 20 standalone architecture for modularity and future-proofing
